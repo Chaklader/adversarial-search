@@ -1,13 +1,11 @@
 
 import unittest
-
 from collections import deque
 from random import choice
 from textwrap import dedent
 
-from isolation import Isolation, Agent, fork_get_action, play, DebugState
-from sample_players import RandomPlayer
-from my_custom_player import CustomPlayer
+from src.isolation import Isolation, DebugState, Agent, play
+from src.my_custom_player import CustomPlayer
 
 
 class BaseCustomPlayerTest(unittest.TestCase):
