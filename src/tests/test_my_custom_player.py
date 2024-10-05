@@ -4,8 +4,8 @@ from collections import deque
 from random import choice
 from textwrap import dedent
 
-from src.isolation import Isolation, DebugState, Agent, play
-from src.my_custom_player import CustomPlayer
+from isolation import Isolation, DebugState, Agent, play, fork_get_action
+from my_custom_player import CustomPlayer
 
 
 class BaseCustomPlayerTest(unittest.TestCase):
