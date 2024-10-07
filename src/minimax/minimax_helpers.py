@@ -22,3 +22,15 @@ def max_value(gameState):
         v = max(v, min_value(gameState.result(a)))
     return v
 
+# Uncomment the code below to pre-test your helper function
+'''
+from gamestate import *
+g = GameState()
+inf = float("inf")
+actions = [((0, 0), inf), ((1, 0), -inf), ((2, 0), inf), ((0, 1), inf), ((1, 1), -inf)]
+
+if all(min_value(g.result(a)) == ev for a, ev in actions):
+    print("Looks like everything works!")
+else:
+    print("Uh oh! Not all the scores matched.") 
+'''
