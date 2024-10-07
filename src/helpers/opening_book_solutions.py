@@ -1,5 +1,5 @@
 import random
-from src.minimax.game_state import GameState
+from src.helpers.game_state import GameState
 
 NUM_ROUNDS = 10
 

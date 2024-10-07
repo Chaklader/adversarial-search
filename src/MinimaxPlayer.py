@@ -1,4 +1,4 @@
-from src.minimax.minimax import minimax_decision
+from src.helpers.minimax import minimax_decision
 
 
 class MinimaxPlayer:

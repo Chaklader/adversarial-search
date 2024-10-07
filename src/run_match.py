@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
                 $python run_match.py -f -r 10 -o GREEDY -p 4
 
-            - Run 100 rounds (100 rounds = 200 games) against the minimax agent with 1 process:
+            - Run 100 rounds (100 rounds = 200 games) against the helpers agent with 1 process:
 
                 $python run_match.py -r 100
         """)
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         '-o', '--opponent', type=str, default='MINIMAX', choices=list(TEST_AGENTS.keys()),
         help="""\
             Choose an agent for testing. The random and greedy agents may be useful 
-            for initial testing because they run more quickly than the minimax agent.
+            for initial testing because they run more quickly than the helpers agent.
         """
     )
     parser.add_argument(

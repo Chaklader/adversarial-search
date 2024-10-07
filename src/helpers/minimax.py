@@ -66,8 +66,8 @@ def max_value(gameState, depth):
 '''
 import gamestate as game
 # Test the depth limit by checking the number of nodes visited
-# -- recall that minimax visits every node in the search tree,
-# so if we search depth one on an empty board then minimax should
+# -- recall that helpers visits every node in the search tree,
+# so if we search depth one on an empty board then helpers should
 # visit each of the five open spaces
 depth_limit = 1
 expected_node_count = 5

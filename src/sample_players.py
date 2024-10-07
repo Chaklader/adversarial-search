@@ -50,7 +50,7 @@ class RandomPlayer(BasePlayer):
 
 class GreedyPlayer(BasePlayer):
     """ Player that chooses next move to maximize heuristic score. This is
-    equivalent to a minimax search agent with a search depth of one.
+    equivalent to a helpers search agent with a search depth of one.
     """
     def score(self, state):
         own_loc = state.locs[self.player_id]
@@ -77,7 +77,7 @@ class MinimaxPlayer(BasePlayer):
     or readme for definition of fair matches).
 
     Implementing get_action() is the only required method, but you can add any
-    other methods you want to perform minimax/alpha-beta/monte-carlo tree search,
+    other methods you want to perform helpers/alpha-beta/monte-carlo tree search,
     etc.
 
     **********************************************************************
@@ -101,7 +101,7 @@ class MinimaxPlayer(BasePlayer):
         **********************************************************************
         """
         # randomly select a move as player 1 or 2 on an empty board, otherwise
-        # return the optimal minimax move at a fixed search depth of 3 plies
+        # return the optimal helpers move at a fixed search depth of 3 plies
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
         else:
