@@ -751,3 +751,158 @@ are possible in its initial belief state. The agent must consider all these poss
 The key idea is that instead of planning in the space of actual states (which the agent can't observe), it plans in the 
 space of belief states, which represent its knowledge and uncertainty about the world. Each action updates this knowledge, 
 narrowing down the possibilities until the agent can be certain it has achieved its goal.
+
+
+Question:
+Which of the following plans will lead to a state where we know all squares are clean?
+Use 'L' for left, 'R' for right, and 'S' for suck.
+
+Correct Answer:
+None of these, and there does not exist a plan that will guarantee achieving the goal.
+
+Explanation:
+1. Sensorless Environment: The vacuum cleaner cannot determine its location or detect dirt.
+2. Slippery Floor (Stochastic Environment): Movement actions (L or R) may fail, leaving the vacuum in its current location.
+
+Given these conditions:
+- No finite sequence of actions can guarantee with 100% certainty that both squares are clean.
+- Even if a sequence like SRSRS is executed, there's no guarantee that the 'R' (Right) movements will succeed due to the slippery floor.
+- The vacuum has no way to confirm its location or the cleanliness of the squares due to lack of sensors.
+
+This scenario demonstrates the challenges of planning in stochastic, partially observable environments:
+- Actions may not have deterministic outcomes.
+- The agent cannot rely on sensory feedback to confirm the results of its actions.
+- It's impossible to guarantee a specific outcome with a fixed, finite plan.
+
+In such environments, instead of a guaranteed plan, we would typically use probabilistic approaches or policies that adapt over 
+time, aiming to increase the likelihood of achieving the goal state without being able to guarantee it absolutely.
+
+
+Planning in Deterministic vs. Stochastic Environments
+
+1. Problem Representation:
+   [A,S,F] - Likely represents Actions, States, and Functions/Goals
+
+2. Goal Representation:
+   Result(Result(A,A → S), S → F) ← Goals
+   This indicates a sequence of actions and their results leading to the goal state.
+
+3. Deterministic Environments:
+   - State transitions are predictable
+   - Represented as: s1 = Result(s,a)
+     Where:
+     s1 is the new state
+     s is the current state
+     a is the action taken
+
+4. Stochastic and Partially-Observable Environments:
+   - State transitions are uncertain
+   - Agent works with belief states rather than exact states
+   - Two-step iterative process:
+     a) Prediction: b' = Predict(b,a)
+        Where:
+        b' is the predicted belief state
+        b is the current belief state
+        a is the action taken
+
+     b) Update: b1 = Update(Predict(b,a), o)
+        Where:
+        b1 is the updated belief state
+        o is the observation after taking action a
+
+5. Key Differences:
+   - Deterministic: Direct state observation
+   - Stochastic: Belief state updates based on predictions and observations
+
+6. Implications for Planning:
+   - Deterministic: Can plan a fixed sequence of actions
+   - Stochastic: Requires adaptive planning, considering uncertainties
+
+7. Belief State Concept:
+   - Represents a distribution over possible states
+   - Updated based on actions and observations
+   - Crucial for decision-making in uncertain environments
+
+8. Predict-Update Cycle:
+   - Predict: Estimates possible outcomes of an action
+   - Update: Incorporates new observations to refine the belief state
+
+This approach allows for planning in environments where the outcomes of actions are not certain and the agent's knowledge 
+of the world state is incomplete. It's a fundamental concept in AI planning for real-world scenarios where uncertainty and 
+partial observability are common.
+
+
+Predict-Update Cycle and Planning Graphs in AI Planning
+
+1. Predict-Update Cycle in Stochastic Environments:
+
+   a) Belief States (b1, b2, b3, b4, b5):
+      - Represent possible world states due to uncertainty
+      - Updated through actions and observations
+
+   b) PREDICT function:
+      - Estimates new belief state after an action
+      - Example: b2 = PREDICT(b1, Suck)
+
+   c) UPDATE function:
+      - Refines belief state based on observations
+      - Example: b3 = UPDATE(b1, [A, Clean])
+
+   d) Action Sequence:
+      - Suck → [A, Clean] observation → Right → [B, Dirty] observation
+
+   e) Belief State Transitions:
+      b1 → b2 (after Suck) → b3 (after [A, Clean] update) → b4 (after Right) → b5 (after [B, Dirty] update)
+
+
+2. Planning Graphs:
+
+   a) Definition:
+      - Special data structure for heuristic estimates
+      - Directed graph with alternating layers
+
+   b) Structure:
+      - Alternates between state and action layers
+      - Includes preconditions and effects of actions
+
+   c) Purpose:
+      - Provides better heuristic estimates
+      - Maps initial state to goal states more effectively
+
+   d) Components:
+      - State layers: Represent possible world states
+      - Action layers: Represent possible actions
+      - Precondition links: Connect states to actions
+      - Effect links: Connect actions to resulting states
+
+   e) Advantages:
+      - Improves planning efficiency
+      - Handles uncertainty and partial observability
+
+3. Application in Vacuum Cleaner Scenario:
+
+   - Initial belief state (b1): Uncertainty about cleaner location and dirt
+   - Actions: Suck, Right
+   - Observations: [A, Clean], [B, Dirty]
+   - Final belief state (b5): Updated knowledge after actions and observations
+
+4. Key Concepts:
+
+   - Stochastic environment: Outcomes of actions are uncertain
+   - Partial observability: Agent doesn't have full information about the world state
+   - Belief state: Probability distribution over possible world states
+   - Planning under uncertainty: Requires adaptive strategies
+
+5. Next Steps:
+
+   - Detailed exploration of planning graph structure
+   - Understanding heuristic generation from planning graphs
+   - Applying planning graphs to more complex scenarios
+
+
+This approach allows AI systems to plan effectively in real-world scenarios where perfect information is not available, 
+and actions may have unpredictable outcomes.
+
+
+
+
