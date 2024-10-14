@@ -639,3 +639,115 @@ Planning vs. Execution Challenges in Real-World Scenarios:
 
 These challenges highlight the complexity of real-world planning and the need for sophisticated AI planning systems that 
 can handle uncertainty, partial information, and dynamic environments.
+
+
+Lecture Notes: Vacuum Cleaner Planning Problem
+
+1. Fully Observable, Deterministic Environment:
+   - 2 locations: A (left) and B (right)
+   - Vacuum cleaner can be in either location
+   - Dirt can be present or absent in each location
+   - Total states: 2 (vacuum position) x 2 (A dirt) x 2 (B dirt) = 8 states
+   - Actions: Move Left, Move Right, Suck
+   - Planning is straightforward: search through state space for goal state
+
+2. Unobservable (Sensorless) Environment:
+   - Vacuum cleaner's sensors break down
+   - Cannot determine location or presence of dirt
+   - Introduces concept of "belief state"
+
+3. Belief States:
+   - Represent all possible states the agent could be in
+   - Initial belief state: all 8 possible states
+   - Actions change belief states, not just individual states
+
+4. Planning with Belief States:
+   - Search occurs in the space of belief states
+   - Each action transforms one belief state into another
+   - Goal is to reach a belief state where all possible states are goal states
+
+5. Implications:
+   - Increases complexity of planning
+   - Requires considering all possible outcomes of actions
+   - Introduces uncertainty into the planning process
+
+6. Advantages of Belief State Planning:
+   - Can handle partial observability
+   - More robust in real-world scenarios
+   - Allows for contingency planning
+
+Explanation:
+This example illustrates the transition from simple, fully observable environments to more complex, partially observable 
+ones. In the real world, agents (like robots or AI systems) often have to deal with uncertainty and incomplete information. 
+The concept of belief states allows us to model this uncertainty explicitly.
+
+Instead of knowing exactly which state the system is in, we maintain a set of possible states (the belief state). Actions 
+then transform these belief states. The challenge becomes finding a sequence of actions that, regardless of the actual 
+initial state, will lead to a desirable outcome.
+
+This approach is more powerful and flexible than traditional state-space search, as it can handle a wider range of real-world 
+scenarios where perfect information is not available. It's a crucial concept in AI planning, robotics, and decision-making under 
+uncertainty.
+
+
+Agent's belief state includes all 8 possible states (2 locations x 2 dirt conditions for each location). Let's explain this:
+
+1. There are 2 locations: A (left) and B (right)
+
+2. For each location, there are 2 possible dirt conditions:
+   - Clean (no dirt)
+   - Dirty (has dirt)
+
+3. The vacuum cleaner can be in either location A or B
+
+So, we calculate the total number of possible states:
+
+* Vacuum location options: 2 (A or B)
+* Dirt condition for location A: 2 (Clean or Dirty)
+* Dirt condition for location B: 2 (Clean or Dirty)
+
+Total combinations: 2 x 2 x 2 = 8 possible states
+
+These 8 states are:
+1. (Vacuum in A, A clean, B clean)
+2. (Vacuum in A, A clean, B dirty)
+3. (Vacuum in A, A dirty, B clean)
+4. (Vacuum in A, A dirty, B dirty)
+5. (Vacuum in B, A clean, B clean)
+6. (Vacuum in B, A clean, B dirty)
+7. (Vacuum in B, A dirty, B clean)
+8. (Vacuum in B, A dirty, B dirty)
+
+
+In the sensorless scenario, because the vacuum cleaner can't determine its location or sense dirt, all of these 8 states 
+are possible in its initial belief state. The agent must consider all these possibilities when planning its actions.
+
+
+1. Belief State:
+   - A belief state is a set of all possible actual states the agent might be in, given its lack of sensory information.
+   - In the sensorless vacuum cleaner problem, because the agent can't sense its location or the presence of dirt, it must consider all possibilities.
+
+2. Initial Belief State:
+   - At the start, the agent's belief state includes all 8 possible states (2 locations x 2 dirt conditions for each location).
+   - This is represented by the box encompassing all states in the diagram.
+
+3. Actions and Belief State Transitions:
+   - Move Left (L), Move Right (R), Suck (S)
+   - When the agent takes an action, it transitions to a new belief state.
+   - The new belief state represents all possible states the agent could be in after taking that action.
+
+4. Example Transitions:
+   - If the agent moves right (R) from the initial belief state, its new belief state would exclude all left-side states.
+   - If the agent sucks (S), its new belief state would include states where the current location (whichever it might be) is clean.
+
+5. Goal in Belief Space:
+   - The goal is to reach a belief state where all possible states within it are goal states (i.e., both locations are clean).
+
+6. Planning in Belief Space:
+   - The agent plans a sequence of actions that will lead from the initial belief state to a goal belief state.
+   - This sequence must work regardless of which actual state the agent started in.
+
+
+The key idea is that instead of planning in the space of actual states (which the agent can't observe), it plans in the 
+space of belief states, which represent its knowledge and uncertainty about the world. Each action updates this knowledge, 
+narrowing down the possibilities until the agent can be certain it has achieved its goal.
