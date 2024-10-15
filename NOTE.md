@@ -19,6 +19,8 @@ through explicit propositional and relations between states and actions.
 
 
 Propositional Logic
+<br>
+–––––––––––––––
 
 Propositional logic is a fundamental form of logic that deals with propositions (statements that are either true or false) 
 and logical connectives. It's a building block for more complex logical systems and is crucial in AI for representing and 
@@ -413,6 +415,8 @@ human logical thinking.
 
 
 First Order Logic in Vacuum World
+<br>
+–––––––––––––––––––––––––––
 
 1. Initial State:
    At(V,A)
@@ -582,6 +586,8 @@ adjacency, which isn't typically considered in chess movements except for specif
 
 
 Planning VS Execution
+<br>
+––––––––––––––––––
 
 
 Planning vs. Execution Challenges in Real-World Scenarios:
@@ -904,5 +910,563 @@ This approach allows AI systems to plan effectively in real-world scenarios wher
 and actions may have unpredictable outcomes.
 
 
+classical Planning
+<br>
+––––––––––––––
 
+
+1. State Space Representation:
+   a) Complete Assignment:
+      - Every variable is assigned a value
+      - Represents a fully defined state
+      - Suitable for deterministic and fully observable environments
+
+   b) Partial Assignment:
+      - Only some variables are assigned values
+      - Represents incomplete knowledge of the state
+      - Useful in stochastic and partially observable environments
+
+   c) Belief State Space:
+      - Can be complete or partial assignments
+      - Represents agent's knowledge about possible states
+      - Essential for planning in uncertain environments
+
+   2. State Space Characteristics:
+      - k-Boolean (2^k): Represents the total number of possible states
+      - For the vacuum cleaner example: 3 Boolean variables (Dirt A, Dirt B, Vac A)
+        Total possible states: 2^3 = 8 states
+
+      3. Action Representation:
+         a) Action Schema:
+            - Defines possible actions in a given state
+            - Components:
+              * Action name
+              * List of state variables
+              * Preconditions
+              * Effects
+
+         b) Example: Fly Action Schema
+   
+      ```textmate
+         Action(Fly(p, from, to),
+                    PRECOND: At(p, from) ∧ Plane(p) ∧ Airport(from) ∧ Airport(to)
+                    EFFECT: ¬At(p, from) ∧ At(p, to))
+      ```
+      
+      - Name: Fly
+      - Variables: p (plane), from (departure airport), to (arrival airport)
+      - Preconditions: Plane is at departure airport, both locations are airports
+      - Effects: Plane is no longer at departure, now at arrival airport
+
+4. Planning Process:
+   - Agent uses action schemas to determine possible actions
+   - Evaluates preconditions against current state
+   - Applies effects to predict new states
+   - Builds a plan by chaining actions to reach goal state
+
+5. Advantages of Classical Planning:
+   - Provides a structured approach to problem-solving
+   - Allows for generalization across similar problems
+   - Facilitates automated reasoning about actions and their consequences
+
+6. Limitations:
+   - May struggle with highly complex or uncertain environments
+   - Assumes perfect knowledge in complete assignments
+
+7. Applications:
+   - Robotics navigation
+   - Logistics and supply chain optimization
+   - Game AI for strategy games
+
+
+This framework of Classical Planning provides a foundation for more advanced planning techniques, especially when dealing 
+with real-world complexities and uncertainties.
+
+
+Classical Planning Actions Representation
+
+A planning agent relies on the action schemas to know what actions are possible in the current state. An action schema consists of
+the action name,  a list of state variables in current space, the preconditions to create this action schema possible, and the effects 
+after this action is completed. An example of an action schema is as follows:
+
+
+```textmate
+Action (Fly (p, from , to ),  
+	PRECOND:At(p, from) ∧ Plane(p) ∧ Airport(from) ∧ Airport(to) 
+	EFFECT:¬At(p, from) ∧ At(p, to))
+```
+
+Schema: Action()
+Action name: Fly
+A list of state variables: plane (p), the airport it flies from (from), and the airport it's flying to (to)
+Preconditions: there is a plane ("Plane(p )") and two airports ("Airport(from)") and "Airport(to)"), the current location of the plane("At(p, from)")
+Effects: the plane is no longer at previous location ("¬At(p, from)") and plane's new location("At(p, to)")
+
+
+
+This is an action schema in classical planning, specifically for a "Fly" action. Let's break it down in detail:
+
+```textmate
+Action(Fly(p, from, to),
+  PRECOND: At(p, from) ∧ Plane(p) ∧ Airport(from) ∧ Airport(to)
+  EFFECT: ¬At(p, from) ∧ At(p, to))
+```
+
+
+1. Action Name: Fly
+   - This defines the action being described.
+
+2. Parameters: (p, from, to)
+   - p: represents the plane
+   - from: represents the departure airport
+   - to: represents the destination airport
+
+3. PRECOND (Preconditions):
+   - At(p, from): The plane p is currently at the departure airport 'from'
+   - Plane(p): p is indeed a plane
+   - Airport(from): 'from' is an airport
+   - Airport(to): 'to' is an airport
+   - The ∧ symbol represents logical AND, meaning all these conditions must be true for the action to be possible
+
+4. EFFECT (Effects):
+   - ¬At(p, from): The plane p is no longer at the departure airport 'from'
+     (¬ represents logical NOT)
+   - At(p, to): The plane p is now at the destination airport 'to'
+   - The ∧ symbol here means both these effects occur simultaneously
+
+Explanation of how this works in planning:
+
+1. Before the action can be executed, the planner checks if all preconditions are met in the current state.
+
+2. If the preconditions are satisfied, the action can be applied.
+
+3. When applied, the effects modify the current state:
+   - It removes the fact that the plane is at the departure airport
+   - It adds the fact that the plane is at the destination airport
+
+4. This new state then becomes the basis for the next action in the plan.
+
+
+
+This action schema allows the planner to reason about moving planes between airports. It ensures that planes only fly between 
+actual airports and that a plane must be at the departure airport before it can fly to the destination. The effects accurately 
+represent the change in the plane's location after the flight.
+
+
+Planning Domain Definition Language (PDDL)
+
+The writings of planning domains and problems are commonly standardized in a Planning Domain Definition Language (PDDL). 
+A complete PDDL consists of an initialization of the planning domains, the goal of the planning problem, and a set of 
+action schemas.
+
+An example of a PDDL is as follows:
+
+```textmate
+Init(At(C1, SFO) ∧ At(C2, JFK) ∧ At(P1, SFO) ∧ At(P2, JFK) 
+∧ Cargo(C1) ∧ Cargo(C2) ∧ Plane(P1) ∧ Plane(P2)  
+∧ Airport(JFK) ∧ Airport(SFO))
+
+Goal(At(C1, JFK) ∧ At(C2, SFO)) 
+
+Action(Load(c, p, a),
+	PRECOND: At(c, a) ∧ At(p, a) ∧ Cargo(c) ∧ Plane(p) ∧ Airport(a)
+	EFFECT: ¬ At(c, a) ∧ In(c, p)) 
+
+Action(Unload(c, p, a),
+	PRECOND: In(c, p) ∧ At(p, a) ∧ Cargo(c) ∧ Plane(p) ∧ Airport(a)
+	EFFECT: At(c, a) ∧ ¬ In(c, p)) 
+
+Action(Fly(p, from, to),
+	PRECOND: At(p, from) ∧ Plane(p) ∧ Airport(from) ∧ Airport(to) 	
+	EFFECT: ¬ At(p, from) ∧ At(p, to))
+```
+
+
+Classical planning problem for cargo transportation:
+
+1. Initial State (Init):
+   - C1 (Cargo 1) is at SFO (San Francisco Airport)
+   - C2 (Cargo 2) is at JFK (John F. Kennedy Airport)
+   - P1 (Plane 1) is at SFO
+   - P2 (Plane 2) is at JFK
+   - C1 and C2 are defined as Cargo
+   - P1 and P2 are defined as Planes
+   - JFK and SFO are defined as Airports
+
+2. Goal State:
+   - C1 should be at JFK
+   - C2 should be at SFO
+   (Essentially, the cargos need to swap locations)
+
+3. Actions:
+   a) Load(c, p, a):
+      - Loads cargo c into plane p at airport a
+      - Preconditions:
+        * Cargo c is at airport a
+        * Plane p is at airport a
+        * c is Cargo, p is a Plane, a is an Airport
+      - Effects:
+        * Cargo c is no longer at airport a
+        * Cargo c is now in plane p
+
+   b) Unload(c, p, a):
+      - Unloads cargo c from plane p at airport a
+      - Preconditions:
+        * Cargo c is in plane p
+        * Plane p is at airport a
+        * c is Cargo, p is a Plane, a is an Airport
+      - Effects:
+        * Cargo c is now at airport a
+        * Cargo c is no longer in plane p
+
+   c) Fly(p, from, to):
+      - Flies plane p from airport 'from' to airport 'to'
+      - Preconditions:
+        * Plane p is at airport 'from'
+        * p is a Plane, 'from' and 'to' are Airports
+      - Effects:
+        * Plane p is no longer at airport 'from'
+        * Plane p is now at airport 'to'
+
+To solve this problem, a planner would need to:
+1. Load C1 into P1 at SFO
+2. Fly P1 from SFO to JFK
+3. Unload C1 from P1 at JFK
+4. Load C2 into P1 at JFK
+5. Fly P1 from JFK to SFO
+6. Unload C2 from P1 at SFO
+
+
+This sequence of actions would achieve the goal state. The planner would use the action schemas to determine which actions 
+are possible at each step and how they change the world state, gradually working towards the goal state.
+
+
+Progression Search in Planning Problems
+
+
+There are two approaches to find possible solutions in the planning problem state space. They are
+
+   1. Progression Search: a forward search from the initial state to the goal state.
+   2. Regression Search: a reverse search from the goal state back to the initial state.
+
+In a tree search, we stack the nodes from top to bottom (the initial state is set as the root node). In the planning graph, 
+it is common to line up the initial state to the goal state from left to right. In the progression search, we start from the 
+initial node on the left and expand the nodes to the right until we find the possible solutions by reaching the goal states.
+
+While the progression search is commonly used, there are two limitations with this approach:
+
+The graph may explore unnecessary actions. For example, the graph may explore a state where a plane with an empty cargo flies 
+from one airport to another. The graph may require large storage as the number of nodes expands exponentially with the number 
+of variables. 
+
+
+
+1. Definition:
+   Progression Search is a forward search strategy that starts from the initial state and moves towards the goal state in planning problems.
+
+2. Process:
+   a) Start with the initial state (e.g., At(P1, SFO), At(C1, SFO))
+   b) Apply possible actions (e.g., Load(C1, P1, SFO))
+   c) Generate new states
+   d) Continue until a goal state is reached
+
+3. Visual Representation:
+   - Initial state on the left
+   - Goal state on the right
+   - States and actions represented as nodes and edges in between
+
+4. Example (from image):
+   Initial State: At(P1, SFO), At(C1, SFO)
+   Action: Load(C1, P1, SFO)
+   New State: In(C1, P1), At(P1, SFO)
+
+5. Advantages:
+   - Intuitive approach
+   - Can find solutions by systematically exploring the state space
+
+6. Limitations:
+   a) May explore unnecessary actions:
+      - E.g., flying an empty plane between airports
+   b) State space explosion:
+      - Number of nodes grows exponentially with the number of variables
+      - Can require large storage and computational resources
+
+7. Comparison:
+   - Contrasted with Regression Search, which works backwards from the goal state
+
+8. Applications:
+   - Used in various planning scenarios, including logistics, robotics, and scheduling
+
+9. Considerations:
+   - Efficiency can be improved with heuristics and pruning techniques
+   - May be combined with other search strategies for better performance
+
+10. Next Steps:
+    - Exploration of Regression Search as an alternative approach
+    - Focus on relevant action schemas from the goal state
+
+
+This approach provides a systematic way to explore the planning problem space, but it's important to be aware of its limitations 
+and consider alternative or complementary strategies for complex problems.
+
+
+Regression Search in Planning Problems
+
+1. Definition:
+   Regression Search, also known as relevant-state search, is a backward search strategy that starts from the goal state and 
+   works towards the initial state in planning problems.
+
+2. Process:
+   a) Start with the goal state (e.g., At(C1, JFK), At(C2, SFO))
+   b) Identify relevant actions that could lead to the goal state
+   c) Work backward, applying inverse actions
+   d) Continue until the initial state is reached
+
+3. Key Characteristics:
+   - Uses action schemas, preconditions, and effects to guide the search
+   - Expands only relevant nodes based on action schemas
+   - Typically has a smaller branching factor compared to progression search
+
+4. Example (from image):
+   Goal State: At(C1, JFK), At(C2, SFO)
+   Relevant Action: Unload(C1, P, JFK)
+   Preconditions added: In(C1, P), At(P, JFK)
+
+5. Action Schema (Unload):
+   PRECOND: In(c,p) ∧ At(p, a) ∧ Cargo(c) ∧ Plane(p) ∧ Airport(a)
+   EFFECT: At(c, a) ∧ ¬In(c,p)
+
+6. Advantages:
+   - Focuses on relevant actions and states
+   - Reduces the search space compared to progression search
+   - Can be more efficient in certain types of problems
+
+7. Limitations:
+   - Difficulty in applying heuristics to speed up the search
+   - May struggle with problems where the goal state is less well-defined
+
+8. Comparison to Progression Search:
+   - Regression: works backward from goal to initial state
+   - Progression: works forward from initial state to goal
+
+9. Applications:
+   - Effective in domains where the goal state is well-defined
+   - Useful in planning problems with many irrelevant actions
+
+10. Considerations:
+    - Choice between regression and progression search depends on the specific problem characteristics
+    - May be combined with other techniques for improved performance
+
+11. Key Takeaway:
+    Regression search can be more efficient by focusing on relevant states and actions, but it has limitations in applying 
+    heuristics for search optimization.
+
+
+This approach provides an alternative strategy for exploring the planning problem space, particularly useful when the goal 
+state is well-defined and there are many potentially irrelevant actions in the problem domain.
+
+
+
+
+Classical Planning - Summary
+––––––––––––––––––––––––––––
+
+
+In the following project, you will implement a planning graph, which is a special data structure that is optimized to search 
+for the solutions for a PDDL.
+
+A planning graph is a directed graph organized into levels: the first level S0 is the initial state, consisting of nodes 
+representing each fluent; then the first level A0 consisting of nodes for each possible action from the states in S0; followed 
+by the alternating levels of Si and Ai until we reach a termination condition. A planning graph terminates when two consecutive 
+levels are identical. At this point, we say that the graph has leveled off.
+
+A planning graph is more efficient than progression and regression searches because the graphplan algorithm can eliminate 
+conflicting actions within an action layer. The conflicting actions can be prevented by the mutual exclusion (mutex) relationships. 
+When the algorithm decides to not taking any action, it is called taking a persistence action, also known as no-op.
+
+There are three possible mutex conditions holds between two actions:
+
+Inconsistent effects: one action negates an effect of the other. For example, Load(Cargo) and the persistence of Unload(Cargo) 
+have inconsistent effects because they disagree on the effect Unload(Cargo). Interference: one of the effects of one action 
+is the negation of a precondition of the other. For example Fly(p, a, b) interferes with the persistence of At(p, a) by negating 
+its precondition. Competing needs: one of the preconditions of one action is mutually exclusive with a precondition of the other. 
+For example, Fly(p, a, b) and Fly(p, a, c) are mutex because they compete on the value of the At(p, a) precondition. The planning 
+graph is a robust data structure to solve a planning problem. If a solution is not found by the end of the planning graph layer, 
+the problem is considered unsolvable.
+
+The planning graph can also provide a heuristic estimation, which calculates the cost to reach the goal states. The cost is known 
+as the level cost based on the number of layers that the algorithm needs to go through to find the solutions. For example, let’s 
+say we have a planning graph with the following alternating layers: S0, A0, S1, A1, S2, A2, S3, A3. If the algorithm finds the 
+conjunction goals at S2 and S3, we can say the cost or level-sum heuristic estimation is 5 (=2 + 3).
+
+
+
+Additional Planing Topics 
+
+
+Sliding Puzzle Action Schema:
+
+1. Action: Slide(t,a,b)
+   - t: tile being moved
+   - a: starting position
+   - b: destination position
+
+2. Preconditions (Pre):
+   - On(t,a): Tile t is on position a
+   - Tile(t): t is a tile
+   - Blank(b): Position b is blank (empty)
+   - Adj(a,b): Positions a and b are adjacent
+
+3. Effects (EFF):
+   - On(t,b): Tile t is now on position b
+   - Blank(a): Position a is now blank
+   - ¬On(t,a): Tile t is no longer on position a
+   - ¬Blank(b): Position b is no longer blank
+
+Key Points:
+1. This action represents sliding a tile from one position to an adjacent empty position.
+2. The puzzle consists of tiles and blank spaces on a grid.
+3. Moves are only possible to adjacent blank spaces.
+4. Each move changes the state of two positions: the start and destination.
+5. The action preserves the overall structure of the puzzle (number of tiles and blank spaces).
+
+Implications for Planning:
+- The planner must consider the arrangement of tiles and blank spaces.
+- Only one tile can be moved at a time.
+- The sequence of moves is important to reach the goal state.
+- The branching factor at each state depends on the number of tiles adjacent to the blank space.
+
+
+This action schema forms the basis for solving sliding puzzle problems in automated planning systems. It defines the rules 
+and constraints of the puzzle, allowing a planner to generate valid sequences of moves to reach a goal configuration.
+
+
+
+
+Situation Calculus in AI Planning
+
+
+Situation Calculus
+Successor - State Axioms
+
+Once we've described this in the ordinary language
+of first order logic
+
+We don't need any special programs to manipulate
+it and come up with the solution
+
+Because we already have
+theorem provers for first order logic
+
+```textmate
+Situation Calculus
+First order logic (FOL)
+
+Actions: objects    Fly(p,x,y)
+
+Situations: objects    S0   S'=Result(s,a)
+Poss(a,s)             --Actions(s)--
+SomePrecond(s) ⇒ Poss(a,s)
+
+Plane(p,s) ∧ Airport(x,s) ∧ Airport(y,s) ∧ At(p,x,s) ⇒
+                    Poss(Fly(p,x,y)
+```
+
+
+```textmate
+Situation Calculus
+Successor - State Axioms
+
+At (p,x,s)
+∀a, s Poss (a,s) ⇒ (fluent true ⇔ a made it true)
+∨ a didn't undo)
+
+Poss (a,s) ⇒ In(c,p,result(s,a)) ⇔
+(a=Load(c,p,x) ∨ (In(c,p,s)∧
+a≠Unload(c,p,x)))
+```
+
+```textmate
+Situation Calculus
+Successor - State Axioms
+
+At (p,x,s)
+∀a, s Poss (a,s) ⇒ (fluent true ⇔ a made it true)
+∨ a didn't undo)
+
+Poss (a,s) ⇒ In(c,p,result(s,a)) ⇔
+(a=Load(c,p,x) ∨ (In(c,p,s)
+a≠Unload(c,p,x)))
+
+Initial state: S0
+At (P1,JFK,S0)    ∀c Cargo(c)⇒
+At (c,JFK,S0)
+
+Goal  ∃s ∀c  Cargo(c)⇒ At (c,SFO,s)
+```
+
+
+
+1. Introduction to Situation Calculus:
+Situation Calculus is a logical formalism used in artificial intelligence for representing and reasoning about dynamic worlds. 
+It's particularly useful in AI planning, where we need to model how actions change the state of the world.
+
+2. Key Components:
+
+a) Actions: Objects that represent things that can be done. 
+   Example: Fly(p,x,y) - representing a plane p flying from x to y
+
+b) Situations: Objects that represent the state of the world.
+   - S0: Initial state
+   - S' = Result(s,a): The situation that results from performing action a in situation s
+
+c) Fluents: Properties that can change over time.
+   Example: At(p,x,s) - true if plane p is at location x in situation s
+
+3. First-Order Logic (FOL) Representation:
+Situation Calculus uses first-order logic to describe the world and its changes. This allows us to use existing theorem 
+provers for first-order logic to reason about dynamic situations.
+
+4. Key Predicates:
+
+a) Poss(a,s): Action a is possible in situation s
+b) SomePreCond(s) ⇒ Poss(a,s): Some precondition must be true for an action to be possible
+
+5. Axioms:
+
+a) Successor-State Axioms:
+   These describe how fluents change with actions. For example:
+   At(p,x,s) ∧ ∀a, s Poss(a,s) ⇒ (fluent true ⇔ a made it true ∨ a didn't undo)
+
+b) Action Precondition Axioms:
+   Example for the Fly action:
+   Plane(p,s) ∧ Airport(x,s) ∧ Airport(y,s) ∧ At(p,x,s) ⇒ Poss(Fly(p,x,y),s)
+
+6. Example Scenario - Cargo Transport:
+
+Initial state: At(P1,JFK,S0)  ∀c Cargo(c) ⇒ At(c,JFK,S0)
+Goal: ∃s ∀c Cargo(c) ⇒ At(c,SFO,s)
+
+This represents a scenario where a plane P1 and all cargo start at JFK airport, and the goal is to have all cargo at SFO 
+airport in some future situation.
+
+7. Planning Process:
+To solve this problem, an AI planner would:
+1. Start from the initial state S0
+2. Use the axioms to determine possible actions
+3. Apply actions to generate new situations
+4. Continue until it reaches a situation that satisfies the goal condition
+
+8. Advantages of Situation Calculus:
+- Provides a formal, logical framework for reasoning about actions and change
+- Can handle complex scenarios with multiple objects and actions
+- Allows for the use of existing theorem provers for first-order logic
+
+9. Challenges:
+- Can be computationally expensive for complex scenarios
+- Requires careful formulation of axioms to avoid inconsistencies
+
+
+By using Situation Calculus, AI planners can formally represent and reason about complex, dynamic worlds, enabling them to 
+solve sophisticated planning problems.
 
