@@ -515,6 +515,131 @@ DLS(node, goal, limit) {
    - Adjust limit based on resources
    - Dynamic optimization
 
+
+Minimax search is guaranteed to find an optimal move, but it is impractical for all but the most trivial games. Game trees grow exponentially with each additional level of search, so the algorithm runtime is also exponential. With only finite computational resources available, we need a way to bound the runtime of the search. Using a fixed depth limit is the simplest mechanism to limit the runtime (although it introduces new problems that we'll see later).
+
+Thad demonstrated the math to estimate a value to use for a fixed depth limit, so now it's time to add a depth limit to our minimax code. We'll add the depth limit as an additional parameter passed to each of the minimax functions, and then we'll update the logic to cut off search when we reach the depth limit.
+
+
+
+## Quiescent Search
+
+Quiescent Search solves the "horizon effect" in game-tree search by continuing evaluation beyond the normal depth limit for "noisy" positions. It's like looking at a chess position until things calm down - if there's a capture sequence, you don't stop evaluating until the captures are finished, ensuring you don't miss important tactical consequences.
+
+## Detailed Explanation
+
+### Core Concept
+1. Position Types
+   - Quiescent: Stable positions where evaluation is reliable
+   - Non-quiescent: Unstable positions with pending tactical threats
+
+2. Search Process
+   - Continue beyond depth limit for non-quiescent positions
+   - Only consider "forcing" moves (captures, checks, etc.)
+   - Stop when position becomes quiescent
+
+### Mathematical Representation
+```
+quiescent(position, alpha, beta) {
+    stand_pat = evaluate(position)
+    if stand_pat >= beta:
+        return beta
+    if alpha < stand_pat:
+        alpha = stand_pat
+
+    moves = generate_forcing_moves(position)
+    for each move in moves:
+        score = -quiescent(-beta, -alpha, make_move(position, move))
+        if score >= beta:
+            return beta
+        if score > alpha:
+            alpha = score
+    return alpha
+}
+```
+
+## Key Features
+1. Selective Deepening
+   - Extends search in tactical positions
+   - Limits search in quiet positions
+
+2. Move Selection
+   - Focuses on forcing moves
+   - Ignores quiet moves at extended depth
+
+## Implementation Details
+1. Move Generation
+   - Captures
+   - Checks (in chess)
+   - Direct threats
+
+2. Stand-Pat Evaluation
+   - Initial position evaluation
+   - Serves as search bound
+
+## Advantages
+1. Accuracy
+   - Reduces horizon effect
+   - Better tactical awareness
+
+2. Efficiency
+   - Selective search extension
+   - Focus on critical variations
+
+## Limitations
+1. Search Explosion
+   - Can greatly increase nodes searched
+   - Need good move ordering
+
+2. Resource Management
+   - Must balance depth vs breadth
+   - Need termination criteria
+
+## Applications
+1. Chess Engines
+   - Evaluating tactical positions
+   - Avoiding tactical oversights
+
+2. Game AI
+   - Improving tactical play
+   - Better decision making
+
+## Optimizations
+1. Delta Pruning
+   - Skip moves unlikely to change evaluation
+   - Reduce search space
+
+2. SEE (Static Exchange Evaluation)
+   - Quick evaluation of captures
+   - Prune unpromising variations
+
+
+Iterative deepening is a search technique that allows minimax-style search functions to return an approximate solution when computational resources are bounded. The basic idea is to start with a small depth-limited search, and grow the depth limit until the resource limit (usually search time) expires.
+
+In the quiz below, you'll implement the get_action() function, which should wrap calls to the minimax.minimax_decision function to perform "iterative deepening" depth limited search. Start with a depth of 1 (the root node itself is a depth of 0), and call the decision function for each depth value up to (and including) the depth limit.
+
+Open the search.ipynb in the workspace below and complete the functions. If you get stuck, feel free to check the solution in the search_solutions.ipynb.
+
+
+<br>
+
+![iterative](images/iterative.png)
+
+<br>
+
+
+Iterative Deepening: b = 3
+
+b = 2       n = 2^(d+1) - 1
+b = 3       n = (3^(d+1) - 1)/2
+b = k       n = (k^(d+1) - 1)/(k-1)
+
+
+Here b appears to be the branching factor and n seems to be representing the number of nodes, where d is likely the depth of the search tree.
+
+
+
+
 <br>
 
 # 4. Build an Adversarial Game Playing Agent
