@@ -287,6 +287,85 @@ This lesson is a reading lesson. We will introduce Monte Carlo Tree Search, a hi
 <br>
 
 
+## Understanding Minimax Algorithm
+
+## Simple Introduction
+Minimax is like playing chess while thinking several moves ahead - for each of your moves, you consider how your opponent might respond, and then how you could counter that response. It assumes your opponent will play optimally to minimize your chances of winning, while you try to maximize your winning chances. This back-and-forth thinking forms the core of the minimax algorithm.
+
+## Detailed Explanation
+### How It Works
+1. Tree Construction
+   - Each node represents a game state
+   - Alternating levels represent MAX (your turn) and MIN (opponent's turn)
+   - Leaf nodes represent terminal states with definite values
+
+2. Value Assignment
+   - For terminal nodes: Assign actual game outcome values
+   - For non-terminal nodes:
+     * MAX nodes: Take maximum of children's values
+     * MIN nodes: Take minimum of children's values
+
+### Mathematical Representation
+```
+minimax(node, depth, maximizingPlayer) {
+    if depth = 0 or node is terminal:
+        return static evaluation of node
+
+    if maximizingPlayer:
+        value = -∞
+        for each child of node:
+            value = max(value, minimax(child, depth-1, FALSE))
+        return value
+
+    else:
+        value = +∞
+        for each child of node:
+            value = min(value, minimax(child, depth-1, TRUE))
+        return value
+}
+```
+
+## Practical Applications
+1. Game Playing
+   - Chess
+   - Tic-tac-toe
+   - Checkers
+
+2. Decision Making
+   - Used in scenarios where two parties have opposing goals
+   - Helps in strategic planning
+
+## Limitations
+1. Computational Complexity
+   - Time complexity: O(b^d)
+     * b = branching factor (number of legal moves)
+     * d = search depth
+   
+2. Memory Requirements
+   - Space complexity: O(bd)
+   - Can be optimized with alpha-beta pruning
+
+## Optimizations
+1. Alpha-Beta Pruning
+   - Reduces number of evaluated nodes
+   - Maintains same final decision
+   - Significantly improves performance
+
+2. Depth Limiting
+   - Set maximum search depth
+   - Use evaluation function for non-terminal leaves
+
+## Real-World Examples
+1. Chess Engines
+   - Evaluating positions
+   - Choosing best moves
+   - Planning strategies
+
+2. Game AI
+   - Creating challenging opponents
+   - Balancing difficulty levels
+   - Ensuring fair gameplay
+
 This week you'll learn about minimax, which extends search to multi-agent domains (i.e., problems where your agent isn't the only influence on the environment). Minimax agents have been very successful in some games (like Chess), but the central idea is even more important: your agent can make better decisions by considering the consequences of its actions.
 
 
@@ -332,6 +411,109 @@ Box A is a maximizing node, and chooses the maximum of boxes B, C, and D which i
 # 3. Optimizing Minimax Search
 
 <br>
+
+
+In this lesson, you will learn about optimizing MINMAX search. Specifically, you will study these topics:
+
+1. Depth-limited search
+2. Evaluation function
+3. Testing the evaluation function
+4. Quiescent search
+5. Iterative deepening
+6. Varying the branching factor
+7. Horizon effect
+8. Alpha-Beta pruning
+
+
+## Understanding Depth-Limited Search
+
+## Simple Introduction
+Depth-Limited Search solves the infinite depth problem of DFS by setting a maximum depth limit. Think of it like exploring a cave with a rope of fixed length - you can only go as deep as the rope allows, even if the cave continues further. This makes the search practical for real-world problems where resources are limited.
+
+## Detailed Explanation
+
+### Core Concept
+1. Basic Structure
+   - Similar to Depth-First Search (DFS)
+   - Includes a depth limit parameter (l)
+   - Returns failure if limit reached
+   - Can return "cutoff" occurred status
+
+### Mathematical Representation
+```
+DLS(node, goal, limit) {
+    if node = goal:
+        return solution
+    else if limit = 0:
+        return cutoff
+    else:
+        cutoff_occurred = false
+        for each successor of node:
+            result = DLS(successor, goal, limit - 1)
+            if result = cutoff:
+                cutoff_occurred = true
+            else if result ≠ failure:
+                return result
+        if cutoff_occurred:
+            return cutoff
+        else:
+            return failure
+}
+```
+
+## Properties
+1. Completeness
+   - Not complete in general
+   - Complete if solution lies within depth limit
+
+2. Time Complexity
+   - O(b^l) where:
+     * b = branching factor
+     * l = depth limit
+
+3. Space Complexity
+   - O(b×l)
+   - Linear in depth limit
+
+## Advantages
+1. Memory Efficiency
+   - Bounded space requirement
+   - Practical for large search spaces
+
+2. Control Over Search
+   - Adjustable depth limit
+   - Predictable resource usage
+
+## Limitations
+1. Solution Quality
+   - May miss optimal solutions
+   - Can fail to find solutions beyond limit
+
+2. Choosing Limit
+   - Too small: misses solutions
+   - Too large: wastes resources
+
+## Applications
+1. Game Playing
+   - Chess engines
+   - Limited look-ahead in strategies
+
+2. Planning Systems
+   - Route finding
+   - Resource allocation
+
+3. Real-time Systems
+   - Where time constraints exist
+   - Quick decision making needed
+
+## Variations
+1. Iterative Deepening
+   - Repeatedly increase depth limit
+   - Combines benefits of BFS and DFS
+
+2. Adaptive Depth Limits
+   - Adjust limit based on resources
+   - Dynamic optimization
 
 <br>
 
