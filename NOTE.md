@@ -287,6 +287,29 @@ This lesson is a reading lesson. We will introduce Monte Carlo Tree Search, a hi
 <br>
 
 
+This week you'll learn about minimax, which extends search to multi-agent domains (i.e., problems where your agent isn't the only influence on the environment). Minimax agents have been very successful in some games (like Chess), but the central idea is even more important: your agent can make better decisions by considering the consequences of its actions.
+
+
+In this lesson, we will discuss the basics of adversarial search. The topics that we will cover are:
+
+1. The MINMAX algorithm
+2. Isolation
+3. MIN and MAX levels
+4. Propagating values up the tree
+5. Computing MIN MAX values
+6. Choosing the best branch
+7. Max number of nodes
+8. The branching factor
+
+
+It is also common to see minimax presented as a simply recursive function(opens in a new tab), or other variants like negamax(opens in a new tab). However, we will adhere to the version from the AIMA text in this exercise, because it separates the functionality for handling the min level and max level nodes (which makes it easier to test), and it more explicitly shows that you only need to choose a move from the root node -- all other children nodes only need to return a value.
+
+<br>
+
+![genetic](images/minimax.png)
+
+<br>
+
 
 
 <br>
