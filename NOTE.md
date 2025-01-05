@@ -42,6 +42,14 @@ You may have heard of the gradient descent algorithm. On the surface, both hill 
 
 Hill Climbing algorithm is said to be incomplete because it can get stuck in a local maximum and does not guarantee finding the global maximum. In the following videos, we will learn two techniques in the attempt to get unstuck in the local maxima. The two techniques are: (i) random restart and (ii) step size configuration.
 
+
+<br>
+
+![genetic](images/hill_climbing.png)
+
+<br>
+
+
 Local Beam Search is a variation of Beam Search(opens in a new tab), a heuristic search algorithm that explores a graph by expanding the most promising node in a limited set (as defined by Wikipedia). Local beam search algorithm randomly generates k number of states and expand all the successors of all k states in each step. The algorithm will terminate when the successor has found the goal. Otherwise, it selects k’s best successors and iterates.
 
 Since the algorithm expands the next best successors and passes useful information across all parallel searches, the search may become narrowed in a small region and may get stuck in the local maxima. A different variant of Stochastic Beam Search solves this problem by choosing k’s successors randomly.
@@ -60,6 +68,13 @@ This week's lessons introduce more techniques for solving combinatorial optimiza
 
 Simulated Annealing algorithm is inspired by the annealing process in metallurgy(opens in a new tab). An annealing process reshapes a hard metal or glass by exposing it to a high temperature and gradually cool it down until it maintains the new shape. Unlike the Hill Climbing algorithm, which can get stuck in the local maxima, Simulated Annealing is guaranteed to find the global maximum.
 
+
+
+<br>
+
+![genetic](images/simulated_annealing.png)
+
+<br>
 
 Notation
 
