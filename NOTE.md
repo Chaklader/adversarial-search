@@ -311,6 +311,21 @@ It is also common to see minimax presented as a simply recursive function(opens 
 <br>
 
 
+### Computing MIN MAX Solution
+
+
+To begin with, boxes E, F, G, H, I, and J have just one child. As such, they simply take the value of their child.
+Box C is a minimizer node, and hence chooses the minimum of boxes F, and G which is G's value of -1.
+Box A is a maximizing node, and chooses the maximum of boxes B, C, and D which is D's value of +1.
+
+<br>
+
+![genetic](images/minimax_1.png)
+
+<br>
+
+
+
 
 <br>
 
