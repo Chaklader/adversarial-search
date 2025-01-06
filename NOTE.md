@@ -883,8 +883,212 @@ Keep in mind that opening books are estimates of the best move. It's possible fo
 
 <br>
 
+
+### Introduction to Extended Minimax
+
+There are several limitations to minimax search (two-player, deterministic, finite games of perfect information), but there have been several minimax algorithms developed to overcome them. This section briefly introduces some of those techniques, and the next section includes links to references you can read for more information. Many of the extensions to minimax can also be applied to more flexible algorithms like Monte Carlo Tree Search, as well.
+
+Two-player games are limited to two adversarial agents. (There are also single-player games like Solitaire and multi-player games.)
+
+Finite games have a finite number actions and a finite number of choices to make on each turn. (Infinite games have continuous action spaces over an interval; for example, continuous chess(opens in a new tab) eliminates the 8x8 grid and allows pieces to move any distance.)
+
+In deterministic games, taking action A from state S always results in the same successor state S'. For example, chess players are in complete control of where to place pieces when they make a move. By comparison, games of chance allow actions that do not have deterministic outcomes. For example, moves in Backgammon depend on the outcome of a dice roll.
+
+Perfect information games mean that both players know all information about the current game state. Chess is a game of perfect information, while the Prisoner's Dilemma is a game of incomplete information.
+
+<br>
+
+![extended_minimax](images/3_player.png)
+
+<br>
+
+
+<br>
+
+![extended_minimax](images/3_player_1.png)
+
+<br>
+
+
+## Sloppy Isolation Expectimax
+
+The Expectimax algorithm is an extension of the Minimax algorithm that is used in decision-making for games involving chance. It is particularly useful in scenarios where the outcomes of actions are probabilistic rather than deterministic. In the context of the "Sloppy Isolation" game, the Expectimax algorithm evaluates possible moves for two players, O and X, while accounting for the probabilities of success for each move. This approach allows players to make informed decisions based on expected outcomes rather than just the best-case scenarios.
+
+## Key Concepts
+
+### Game Setup
+- **Players**: The game involves two players, O and X.
+- **Moves**: Each player has a set of possible moves they can make on a game board.
+- **Probabilities**: Each move has an associated probability of success, which may vary (e.g., 90% success rate).
+
+### Expectimax Algorithm
+1. **Game Tree**: The algorithm constructs a game tree where each node represents a state of the game after a move.
+2. **Max Nodes**: At O's turn, the algorithm seeks to maximize the expected value of the outcomes.
+3. **Min Nodes**: At X's turn, the algorithm seeks to minimize the expected value of the outcomes.
+4. **Probability Nodes**: The algorithm incorporates probability nodes to account for the uncertainty in the outcomes of moves.
+
+### Evaluation Process
+- **Expected Value Calculation**: For each move, the expected value is calculated using the formula:
+  \[
+  \text{Expected Value} = \sum (\text{Probability of Outcome} \times \text{Value of Outcome})
+  \]
+- **Pruning**: If a branch of the game tree is determined to be less favorable than another, it can be pruned (i.e., not evaluated further) to optimize the decision-making process.
+
+### Example Walkthrough
+- The video illustrates the evaluation of different moves for player O, highlighting the probabilities of success and the potential outcomes for player X.
+- It demonstrates how to calculate expected values for various branches of the game tree, leading to informed decision-making.
+
+### Conclusion
+The Expectimax algorithm provides a robust framework for making decisions in games with probabilistic outcomes. By evaluating expected values and pruning less favorable branches, players can enhance their chances of success in uncertain environments. Understanding the principles of Expectimax is crucial for developing intelligent agents capable of competing in complex games.
+
+
+
+<br>
+
+![extended_minimax](images/sloppy.png)
+
+<br>
+
+
+
+<br>
+
+![extended_minimax](images/expectimax.png)
+
+<br>
+
+
+## Probabilistic Alpha-Beta Pruning
+
+Probabilistic Alpha-Beta Pruning is an optimization technique used in decision-making algorithms for games involving multiple players and uncertainty. It extends the traditional Alpha-Beta pruning method by incorporating probabilities into the evaluation of game states. This allows for more efficient pruning of the game tree, leading to faster decision-making while maintaining optimality in competitive environments.
+
+## Key Concepts
+
+### Alpha-Beta Pruning
+- **Alpha**: The best value that the maximizer (e.g., player O) can guarantee at that level or above.
+- **Beta**: The best value that the minimizer (e.g., player X) can guarantee at that level or below.
+- The algorithm prunes branches that cannot influence the final decision, reducing the number of nodes evaluated in the game tree.
+
+### Probabilistic Approach
+- In a probabilistic game, outcomes are uncertain, and each move has an associated probability of success.
+- The algorithm evaluates nodes based on expected values rather than deterministic values, allowing for more informed pruning decisions.
+
+### Game Tree Structure
+1. **MAX Nodes**: Represent the player's turn aiming to maximize the score.
+2. **MIN Nodes**: Represent the opponent's turn aiming to minimize the score.
+3. **Chance Nodes**: Represent probabilistic outcomes where the algorithm must consider the likelihood of different scenarios.
+
+### Pruning Process
+- When evaluating a node, if the value of that node is worse than the current alpha or beta values, it can be pruned.
+- The algorithm can drop the inequality sign for the root node after evaluating all sub-trees, simplifying the decision-making process.
+
+### Expected Value Calculation
+- The expected value for each node is calculated using the probabilities of the outcomes:
+  \[
+  \text{Expected Value} = \sum (\text{Probability of Outcome} \times \text{Value of Outcome})
+  \]
+- This calculation helps in determining which branches can be pruned based on their expected contributions to the overall outcome.
+
+## Example Application
+- The algorithm can be applied in multi-player games where players have different strategies and probabilities of success.
+- By evaluating expected values and pruning less favorable branches, players can enhance their decision-making efficiency.
+
+## Conclusion
+Probabilistic Alpha-Beta Pruning is a powerful technique for optimizing decision-making in games with uncertainty. By incorporating probabilities into the pruning process, the algorithm can efficiently navigate complex game trees while ensuring optimal outcomes. Understanding this technique is essential for developing intelligent agents capable of competing in uncertain environments.
+
+
 <br>
 
 # 6. Additional Adversarial Search Topics
+
+<br>
+
+## Monte Carlo Tree Search
+
+
+Monte Carlo Tree Search is an alternative to Minimax search that has been used successfully in many modern applications. MCTS is a general search technique that can be trivially extended to adversarial search. The main benefit of MCTS vs Minimax is that it is an aheuristic search—you do not need a good search heuristic in the domain to get reasonable results, and it works better than minimax in extremely large domains (most Go agents—including AlphaGo and AlphaZero—use MCTS).
+
+
+<br>
+
+![monte](images/monte.png)
+
+<br>
+
+### How it Works
+
+MCTS works by combining tree search with simulation; rather than using a heuristic to estimate the value of each leaf node of the search tree, it instead quickly simulates the remaining game according to some default policy, and uses many replications of those rollouts to estimate the value of each possible action. The MCTS algorithm includes four phases: Selection, Expansion, Simulation, and Backpropagation. Pseudocode for each phase is shown below, along with the backup step for 2-player games.
+
+It is possible to perform MCTS with uniform sampling of the action space, but that tends to be inefficient in terms of sampling. Upper Confidence Bound for Trees (UCT) is an alternative sampling strategy that tries to sample more promising actions more frequently than other actions. It has been shown that MCTS converges to the minimax value of a search tree as the number of simulations goes towards infinity.
+
+```textmate
+
+Algorithm 2 The UCT algorithm.
+function UCTSEARCH(s₀)
+   create root node v₀ with state s₀
+   while within computational budget do
+       vₗ ← TREEPOLICY(v₀)
+       Δ ← DEFAULTPOLICY(s(vₗ))
+       BACKUP(vₗ,Δ)
+   return a(BESTCHILD(v₀,0))
+
+function TREEPOLICY(v) 
+   while v is nonterminal do
+       if v not fully expanded then
+           return EXPAND(v)
+       else
+           v ← BESTCHILD(v,Cp)
+   return v
+
+function EXPAND(v)
+   choose a ∈ untried actions from A(s(v))
+   add a new child v' to v
+       with s(v') = f(s(v),a)
+       and a(v') = a
+   return v'
+
+function BESTCHILD(v,c)
+   return arg max     Q(v')/N(v') + c√(2ln N(v)/N(v'))
+          v'∈children of v
+
+function DEFAULTPOLICY(s)
+   while s is non-terminal do
+       choose a ∈ A(s) uniformly at random
+       s ← f(s,a)
+   return reward for state s
+
+Algorithm 3 UCT backup for two players.
+function BACKUPNEGAMAX(v,Δ)
+   while v is not null do
+       N(v) ← N(v) + 1
+       Q(v) ← Q(v) + Δ
+       Δ ← -Δ
+       v ← parent of v
+```
+
+
+### The MCTS Reward Function
+
+The reward function in MCTS does not rely on a heuristic, but the semantics of the reward can be confusing. In the formulation presented in the pseudocode above, the default policy should return +1 if the agent holding initiative at the start of a simulation loses and -1 if the active agent when the simulation starts wins because nodes store the reward relative to their parent in the game tree.
+
+But...why?
+The BestChild() function chooses the action a that maximizes Q over the child nodes v' of the input node v, so the value of Q should be higher if taking action a from state v will lead to the player with initiative in state v (the parent) winning from state v' (the child), and lower if taking the action will lead to a loss.
+
+
+<br>
+
+![monte](images/monte_1.png)
+
+<br>
+
+The figure above illustrates the simplest representation of the four possible cases for new node expansion.
+
+Starting from v=v0, search may expand action a0,0 to reach v1, where the simulation results in a win for player 1. Notice that player 2 has initiative on the board when the simulation is performed, so the utility of the final state to the active player in state v1 (i.e., player 2) is -∞, however the MCTS reward should be +1 because player 1 benefits from choosing action a0,0.
+
+Starting from v=v0, search may expand action a0,1 to reach v2, where the simulation results in a win for player 2. The utility of the final simulation state to the active player in state v2 (i.e., player 2) is ∞, however the MCTS reward should be -1 in order to discourage Player 1 from choosing action a0,1.
+
+Starting from v=v0, search may expand action a0,2 to reach v3, then expands action a3,0 to reach v4 where the simulation results in a win for player 1. The utility of the final simulation state to the active player in the initial simulation state v4 (i.e., player 1) is ∞, however the MCTS reward should be -1 in order to discourage Player 2 (the parent of v4) from choosing action a3,0; the BackupNegamax() function inverts the reward before propagating back to v3 which makes Player 1 more likely to choose action a3,0—which makes sense because the simulation on this branch led to a win for Player 1.
+
+Starting from v=v0, search may expand action a0,2 to reach v3, then expands action a3,1 to reach v5 where the simulation results in a win for player 2. The utility of the final simulation state to the active player in the initial simulation state v4 (i.e., player 1) is -∞, however the MCTS reward should be 1 in order to encourage Player 2 (the parent of v5) to choosing action a3,1; the BackupNegamax() function inverts the reward before propagating back to v3 which makes Player 1 less likely to choose action a3,0—which makes sense because the simulation on this branch led to a loss for Player 1.
 
 <br>
