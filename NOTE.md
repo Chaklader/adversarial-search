@@ -638,9 +638,221 @@ b = k       n = (k^(d+1) - 1)/(k-1)
 Here b appears to be the branching factor and n seems to be representing the number of nodes, where d is likely the depth of the search tree.
 
 
+Here's how to find MAX alpha and MIN beta values in a tree structure:
 
+1. Finding MAX (Alpha)
+
+```textmate
+maxAlpha = -∞
+for each child node:
+    childValue = evaluate(child)
+    maxAlpha = max(maxAlpha, childValue)
+    if maxAlpha ≥ beta:
+        break  // Prune remaining branches
+```
+
+2. Finding MIN (Beta)
+
+```textmate
+minBeta = +∞
+for each child node:
+    childValue = evaluate(child)
+    minBeta = min(minBeta, childValue)
+    if alpha ≥ minBeta:
+        break  // Prune remaining branches
+```
+
+Let's use a simple example:
+
+```textmate
+       Root(MAX)
+      /    |    \
+     3     5     2
+    /|\   /|\   /|\
+   2 8 4 1 5 3 7 4 9
+```
+
+At MAX level (Root):
+1. First branch: α = max(-∞, 3) = 3
+2. Second branch: α = max(3, 5) = 5
+3. Third branch: α = max(5, 2) = 5
+
+At MIN level (Children):
+1. Left node: β = min(+∞, min(2,8,4)) = 2
+2. Middle node: β = min(+∞, min(1,5,3)) = 1
+3. Right node: β = min(+∞, min(7,4,9)) = 4
+
+The algorithm would prune branches where α ≥ β, significantly reducing the search space.
+
+
+Let me explain alpha-beta pruning with a clearer example:
+
+```textmate
+           A(MAX)
+         /        \
+    B(MIN)        C(MIN)
+    /    \        /    \
+D(MAX)  E(MAX)  F(MAX) G(MAX)
+   3      5      2      8
+```
+
+Let's walk through this step by step:
+
+1. Starting values: 
+   - α = -∞
+   - β = +∞
+
+2. Traverse left first:
+   - At D: α = 3
+   - At E: α = 5
+   - At B: β = min(3,5) = 3
+   - Update A's α = 3
+
+3. Now at C:
+   - At F: α = 2
+   - B already gave value 3
+   - If next move (G) can't beat 3 (MIN will choose smaller value), MAX won't choose C
+   - No need to evaluate G (pruning!)
+
+Better example with pruning:
+
+```textmate
+           A(MAX)
+         /        \
+    B(MIN)        C(MIN)
+    /    \        /    \
+D(MAX)  E(MAX)  F(MAX) G(MAX)
+   5      3      2      ? (pruned)
+```
+
+Here's why G is pruned:
+
+1. B returns 3 (MIN chooses smaller between 5 and 3)
+2. At C, we find F = 2
+3. Since 2 < 3, MIN at C will choose ≤ 2
+4. MAX at A already has 3 from B
+5. Therefore, A will never choose C's path
+6. No need to evaluate G
+
+
+### The Alpha Beta Search Algorithm
 
 <br>
+
+![alpha_beta_search](images/alpha_beta_search.png)
+
+<br>
+
+<br>
+
+
+This video introduces the concept of alpha-beta pruning which modifies the minimax algorithm by introducing two new variables: α -- the maximum lower bound of the minimax value -- and β -- the minimum upper bound of the minimax value. In other words: at every state in the game tree α represents the guaranteed worst-case score that the MAX player could achieve, and β represents the guaranteed worst-case score that the MIN player could achieve.
+
+The estimates of α are only updated in each MAX node, while β is only updated in each MIN node. If the estimate of the upper bound is ever lower than the estimate of the lower bound in any state, then the search can be cut off because there are no values between the upper and lower bounds. Practically this means that your agent could do better by making a different move earlier in the game tree to avoid the pruned state.
+
+Implementing alpha-beta pruning in minimax only adds the two new variables (alpha & beta), and adds a conditional branch to the MIN and MAX nodes to break and return the appropriate bound when a state is pruned. (See the pseudocode above & compare with the minimax(opens in a new tab) algorithm.)
+
+There's one more difference you'll notice between minimax and alpha-beta: the alpha-beta search function seems to call the max_value()helper from the root node, while minimax calls the min_value()helper. But the pseudocode for alpha-beta search is just hiding some additional complexity: calling max_value() returns the score of the best branch -- but it doesn't tell you what the best branch is. You can implement the algorithm just like the minimax-decision function if you modify it to update alpha between branches.
+
+
+
+
+Let me analyze the alpha-beta pruning step by step on this tree:
+
+Shape symbols indicate:
+- Triangles pointing up (blue): MAX nodes
+- Triangles pointing down (red): MIN nodes
+- Squares (gray): intermediate nodes
+- Rectangles (white): leaf nodes
+
+Values:
+
+```textmate
+                    MAX(5)
+                /          \
+           MIN(5)        MIN(4)
+          /      \      /      \
+    MAX(5)    MAX(11) MAX(15) MAX(4)
+    /    \    /    \   /    \  /    \
+    2     5   11    4  14   15  3    4
+```
+
+Let's walk through with α and β:
+
+1. Start with α = -∞, β = +∞
+
+2. Left subtree under first MIN:
+   - First MAX: max(2,5) = 5
+   - Second MAX: max(11,4) = 11
+   - MIN chooses: min(5,11) = 5
+
+3. Right subtree under second MIN:
+   - First MAX: max(14,15) = 15
+   - No need to evaluate last MAX node (4) because:
+     * We already know this MIN will return ≤15
+     * Previous MIN returned 5
+     * MAX at root has α = 5
+     * Any value ≤15 won't improve α
+   - Thus prune the last node (3,4)
+
+4. Final result at root MAX = 5
+
+The key pruning happens in the rightmost branch - we don't need to evaluate the last MAX node (with values 3,4) because it can't affect the final decision.
+
+
+Let me break down each step with α and β values:
+
+1. Initial Values:
+   * α = -∞ 
+   * β = +∞
+
+2. Left Side First:
+
+
+Level 1 (Root MAX): α = -∞, β = +∞
+
+Level 2 (First MIN): α = -∞, β = +∞
+   - First MAX node (2,5):
+     * evaluates 2: α = max(-∞, 2) = 2
+     * evaluates 5: α = max(2, 5) = 5
+     * returns 5
+   
+   - Second MAX node (11,4):
+     * evaluates 11: α = max(-∞, 11) = 11
+     * evaluates 4: α = max(11, 4) = 11
+     * returns 11
+
+   MIN selects minimum(5,11) = 5
+   Updates root's α = 5
+
+
+3. Right Side:
+
+
+Level 2 (Second MIN): α = 5, β = +∞
+   - First MAX node (14,15):
+     * evaluates 14: α = max(-∞, 14) = 14
+     * evaluates 15: α = max(14, 15) = 15
+     * returns 15
+
+   - Second MAX node (3,4):
+     * PRUNED! Because:
+       - Parent MIN will select ≤15
+       - Root already has α = 5
+       - Any value ≤15 won't improve α = 5
+
+
+4. Final Result:
+   * Root MAX has α = 5
+   * This is the optimal value
+
+The pruning saves us from evaluating the last node because:
+- If any value in pruned branch ≤5: won't be chosen by MAX
+- If any value >5 but ≤15: will be minimized by MIN node above
+- Therefore, can't affect final decision
+
+
+
 
 # 4. Build an Adversarial Game Playing Agent
 
